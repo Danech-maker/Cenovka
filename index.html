@@ -13,7 +13,7 @@
 
     <!-- Údaje o firmě -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
+      <div>
         <label class="block text-sm font-medium">Název firmy <span class="text-red-500">*</span></label>
         <input type="text" id="nazevFirmy" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o." />
       </div>
@@ -34,6 +34,7 @@
         <input type="tel" id="telefonFirmy" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789" />
       </div>
     </div>
+
     <!-- Údaje zákazníka -->
     <h2 class="text-xl font-semibold mb-2 mt-4">Zákazník</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -54,6 +55,7 @@
         <input type="text" id="adresaZakaznika" class="mt-1 w-full border rounded p-2" placeholder="Ulice, město" />
       </div>
     </div>
+
     <!-- Položky nabídky -->
     <h2 class="text-xl font-semibold mb-2">Položky nabídky</h2>
     <div class="overflow-x-auto">
@@ -95,15 +97,18 @@
     </div>
 
     <div class="flex flex-wrap justify-end items-center gap-4 mt-6">
-      <!-- action buttons -->
+      <button onclick="if(validateForm()) saveOffer()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Uložit</button>
+      <input type="file" id="loadInput" accept=".json" hidden />
+      <button onclick="document.getElementById('loadInput').click()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Načíst nabídku</button>
+      <button onclick="if(validateForm()) window.print()" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500">Náhled</button>
+      <button onclick="if(validateForm()) exportPDF()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Exportovat do PDF</button>
+      <button onclick="if(validateForm()) sendEmail()" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Odeslat e-mailem</button>
     </div>
   </div>
 
   <script>
-    // Data model
     let items = [];
 
-    // Render function (only updates DOM for items)
     function renderItems() {
       const tbody = document.getElementById('items');
       const mobile = document.getElementById('itemsMobile');
@@ -117,76 +122,66 @@
       }
 
       items.forEach((item, idx) => {
-        // Desktop row
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td class="p-2"><input type="text" class="w-full border rounded p-1" value="${item.description}" onchange="updateItem(${idx}, 'description', this.value)"></td>
-          <td class="p-2 text-right"><input type="number" min="0" class="w-32 border rounded p-1 text-right" value="${item.quantity}" onchange="updateItem(${idx}, 'quantity', this.value)"></td>
-          <td class="p-2 text-right"><input type="number" min="0" step="0.01" class="w-32 border rounded p-1 text-right" value="${item.price}" onchange="updateItem(${idx}, 'price', this.value)"></td>
-          <td class="p-2 text-right font-semibold">${(item.quantity * item.price).toFixed(2)} Kč</td>
+          <td class="p-2"><input type="text" class="w-full border rounded p-1" value="${item.description}" oninput="updateItem(${idx}, 'description', this.value)"></td>
+          <td class="p-2 text-right"><input type="number" min="0" class="w-32 border rounded p-1 text-right" value="${item.quantity}" oninput="updateItem(${idx}, 'quantity', this.value)"></td>
+          <td class="p-2 text-right"><input type="number" min="0" step="0.01" class="w-32 border rounded p-1 text-right" value="${item.price}" oninput="updateItem(${idx}, 'price', this.value)"></td>
+          <td class="p-2 text-right font-semibold item-total">${(item.quantity * item.price).toFixed(2)} Kč</td>
           <td class="p-2 text-center"><button onclick="removeItem(${idx})" class="bg-red-500 text-white px-2 py-1 rounded">Smazat</button></td>
         `;
         tbody.appendChild(tr);
 
-        // Mobile card
         const card = document.createElement('div');
         card.className = 'border rounded p-3 bg-gray-50';
         card.innerHTML = `
-          <input type="text" class="w-full border rounded p-1 mb-2" value="${item.description}" placeholder="Popis" onchange="updateItem(${idx}, 'description', this.value)">
-          <input type="number" min="0" class="w-full border rounded p-1 mb-2 text-right" value="${item.quantity}" placeholder="Množství" onchange="updateItem(${idx}, 'quantity', this.value)">
-          <input type="number" min="0" step="0.01" class="w-full border rounded p-1 mb-2 text-right" value="${item.price}" placeholder="Cena/ks" onchange="updateItem(${idx}, 'price', this.value)">
-          <div class="text-right font-semibold mb-2">Celkem: ${(item.quantity * item.price).toFixed(2)} Kč</div>
+          <input type="text" class="w-full border rounded p-1 mb-2" value="${item.description}" placeholder="Popis" oninput="updateItem(${idx}, 'description', this.value)">
+          <input type="number" min="0" class="w-full border rounded p-1 mb-2 text-right" value="${item.quantity}" placeholder="Množství" oninput="updateItem(${idx}, 'quantity', this.value)">
+          <input type="number" min="0" step="0.01" class="w-full border rounded p-1 mb-2 text-right" value="${item.price}" placeholder="Cena/ks" oninput="updateItem(${idx}, 'price', this.value)">
+          <div class="text-right font-semibold mb-2 mobile-total">Celkem: ${(item.quantity * item.price).toFixed(2)} Kč</div>
           <button onclick="removeItem(${idx})" class="w-full bg-red-500 text-white p-1 rounded">Smazat</button>
         `;
         mobile.appendChild(card);
       });
     }
 
-    // Update a single item without full re-render
     function updateItem(index, field, value) {
       if (field === 'quantity' || field === 'price') {
         items[index][field] = parseFloat(value) || 0;
       } else {
         items[index][field] = value;
       }
-      // Update specific row total without full re-render
       const row = document.querySelectorAll('#items tr')[index];
       if (row) {
         const totalCell = row.querySelector('.item-total');
-        const item = items[index];
-        totalCell.textContent = (item.quantity * item.price).toFixed(2) + ' Kč';
+        const it = items[index];
+        totalCell.textContent = (it.quantity * it.price).toFixed(2) + ' Kč';
       }
-      // Update mobile total
       const mobileCard = document.getElementById('itemsMobile').children[index];
       if (mobileCard) {
         const mobTotal = mobileCard.querySelector('.mobile-total');
-        const item = items[index];
-        mobTotal.textContent = 'Celkem: ' + (item.quantity * item.price).toFixed(2) + ' Kč';
+        const it = items[index];
+        mobTotal.textContent = 'Celkem: ' + (it.quantity * it.price).toFixed(2) + ' Kč';
       }
       calculateTotals();
     }
-      calculateTotals();
-    }
 
-    // Add new empty item
     function addItem() {
       items.push({ description: '', quantity: 1, price: 0 });
       renderItems();
       calculateTotals();
     }
 
-    // Remove item
     function removeItem(index) {
       items.splice(index, 1);
       renderItems();
       calculateTotals();
     }
 
-    // Calculate totals and update DOM
     function calculateTotals() {
       const sleva = parseFloat(document.getElementById('sleva').value) || 0;
       const subtotal = items.reduce((sum, it) => sum + it.quantity * it.price, 0);
-      const slevaCastka = subtotal * sleva / 100;
+      const slevaCastka = subtotal * (sleva / 100);
       const bezDPH = subtotal - slevaCastka;
       const dph = bezDPH * 0.21;
       const total = bezDPH + dph;
@@ -198,11 +193,9 @@
       document.getElementById('grandTotal').textContent = total.toFixed(2) + ' Kč';
     }
 
-    // Initial binding
     document.getElementById('addItem').addEventListener('click', addItem);
     document.getElementById('sleva').addEventListener('input', calculateTotals);
 
-    // Initial render
     renderItems();
     calculateTotals();
   </script>
