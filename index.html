@@ -15,7 +15,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
         <label class="block text-sm font-medium">Název firmy</label>
-        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o.">
+        <input type="text" id="nazevFirmy" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o.">
       </div>
       <div>
         <label class="block text-sm font-medium">IČO</label>
@@ -88,6 +88,8 @@
 
     <div class="flex flex-wrap justify-end items-center gap-4 mt-6">
       <button onclick="saveOffer()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Uložit</button>
+      <input type="file" id="loadInput" accept=".json" hidden>
+      <button onclick="document.getElementById('loadInput').click()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Načíst nabídku</button>
       <button onclick="window.print()" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500">Náhled</button>
       <button onclick="exportPDF()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Exportovat do PDF</button>
       <button onclick="sendEmail()" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Odeslat e-mailem</button>
@@ -146,8 +148,12 @@
     }
 
     function saveOffer() {
+      const firma = document.getElementById('nazevFirmy').value.trim() || 'firma';
+      const datum = new Date().toISOString().split('T')[0];
+      const filename = `nabidka_${firma.replace(/\s+/g,'_')}_${datum}.json`;
+
       const data = {
-        firma: document.querySelector('input[placeholder="Firma s.r.o."]').value,
+        firma,
         ico: document.querySelector('input[placeholder="12345678"]').value,
         email: document.querySelector('input[placeholder="firma@email.cz"]').value,
         telefon: document.querySelector('input[placeholder="+420 123 456 789"]').value,
@@ -170,9 +176,43 @@
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = "nabidka.json";
+      link.download = filename;
       link.click();
     }
+
+    document.getElementById('loadInput').addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = JSON.parse(e.target.result);
+        document.getElementById('nazevFirmy').value = data.firma || "";
+        document.querySelector('input[placeholder="12345678"]').value = data.ico || "";
+        document.querySelector('input[placeholder="firma@email.cz"]').value = data.email || "";
+        document.querySelector('input[placeholder="+420 123 456 789"]').value = data.telefon || "";
+        document.querySelector('input[placeholder="Zákazník s.r.o."]').value = data.zakaznik || "";
+        document.querySelector('input[placeholder="zakaznik@email.cz"]').value = data.zakaznikEmail || "";
+        document.querySelector('textarea').value = data.poznamka || "";
+        document.getElementById('sleva').value = data.sleva || 0;
+        
+        const itemsContainer = document.getElementById('items');
+        itemsContainer.innerHTML = "";
+        (data.polozky || []).forEach(p => {
+          let row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="p-2"><input type="text" class="w-full border rounded p-1" value="${p.popis || ''}"></td>
+            <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="${p.mnozstvi || 0}"></td>
+            <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="${p.cena || 0}"></td>
+            <td class="p-2 text-right text-gray-600 total">0 Kč</td>
+            <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
+          `;
+          itemsContainer.appendChild(row);
+        });
+        updateRemoveListeners();
+        updateTotals();
+      };
+      reader.readAsText(file);
+    });
 
     updateRemoveListeners();
     updateTotals();
