@@ -22,7 +22,7 @@
         <input type="text" id="icoFirmy" class="mt-1 w-full border rounded p-2" placeholder="12345678" />
       </div>
       <div>
-        <label class="block text-sm font-medium">Adresa</label>
+        <label class="block text-sm font-medium">Adresa <span class="text-red-500">*</span></label>
         <input type="text" id="adresaFirmy" class="mt-1 w-full border rounded p-2" placeholder="Ulice, město" />
       </div>
       <div>
@@ -51,12 +51,12 @@
         <input type="text" id="icoZakaznika" class="mt-1 w-full border rounded p-2" placeholder="87654321" />
       </div>
       <div>
-        <label class="block text-sm font-medium">Adresa</label>
+        <label class="block text-sm font-medium">Adresa <span class="text-red-500">*</span></label>
         <input type="text" id="adresaZakaznika" class="mt-1 w-full border rounded p-2" placeholder="Ulice, město" />
       </div>
     </div>
 
-    <!-- Tabulka položek -->
+    <!-- Položky nabídky -->
     <h2 class="text-xl font-semibold mb-2">Položky nabídky</h2>
     <div class="overflow-x-auto">
       <table class="w-full text-sm border md:table hidden">
@@ -71,14 +71,12 @@
         </thead>
         <tbody id="items"></tbody>
       </table>
-
-      <!-- Mobilní zobrazení -->
       <div id="itemsMobile" class="space-y-4 md:hidden"></div>
     </div>
 
     <button id="addItem" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4">+ Přidat položku</button>
 
-    <!-- Sleva -->
+    <!-- Výpočty -->
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
       <div>
         <label class="block text-sm font-medium">Sleva (%)</label>
@@ -89,19 +87,14 @@
         Sleva: <span id="slevaCastka">0 Kč</span><br />
         Cena bez DPH: <span id="bezDPH">0 Kč</span><br />
         DPH (21 %): <span id="dphCastka">0 Kč</span><br />
-        Celkem s DPH: <span id="grandTotal">0 Kč</span>
+        <span class="text-xl">Celkem s DPH: <span id="grandTotal">0 Kč</span></span>
       </div>
     </div>
 
     <!-- Poznámka -->
     <div class="mt-6">
       <label class="block text-sm font-medium">Poznámka</label>
-      <textarea
-        id="poznamka"
-        class="w-full border rounded p-2 mt-1"
-        rows="3"
-        placeholder="Děkujeme za Váš zájem."
-      ></textarea>
+      <textarea id="poznamka" class="w-full border rounded p-2 mt-1" rows="3" placeholder="Děkujeme za Váš zájem."></textarea>
     </div>
 
     <div class="flex flex-wrap justify-end items-center gap-4 mt-6">
@@ -115,281 +108,55 @@
   </div>
 
   <script>
-    // Pole s položkami nabídky
     let items = [];
-
-    // Přidání nové položky
     function addItem(description = '', quantity = 1, price = 0) {
-      items.push({ description, quantity, price });
-      renderItems();
-      calculateTotals();
-    }
-
-    // Odstranění položky podle indexu
-    function removeItem(index) {
-      items.splice(index, 1);
-      renderItems();
-      calculateTotals();
-    }
-
-    // Aktualizace položky podle indexu
-    function updateItem(index, field, value) {
-      if (field === 'quantity' || field === 'price') {
-        value = parseFloat(value);
-        if (isNaN(value) || value < 0) value = 0;
+      items.push({ description, quantity, price }); renderItems(); calculateTotals(); }
+    function removeItem(i) { items.splice(i,1); renderItems(); calculateTotals(); }
+    function updateItem(i,f,v){
+      if(f==='quantity' || f==='price'){
+        v = parseFloat(v) || 0;
       }
-      items[index][field] = value;
-      renderItems();
+      items[i][f] = v;
       calculateTotals();
-    }
-
-    // Vykreslení položek v tabulce i mobilní verzi
-    function renderItems() {
-      const tbody = document.getElementById('items');
-      const mobileDiv = document.getElementById('itemsMobile');
-      tbody.innerHTML = '';
-      mobileDiv.innerHTML = '';
-
-      items.forEach((item, index) => {
-        // Desktop tabulka
-        const tr = document.createElement('tr');
-
-        // Popis
-        const tdDesc = document.createElement('td');
-        tdDesc.className = 'p-2';
-        const inputDesc = document.createElement('input');
-        inputDesc.type = 'text';
-        inputDesc.value = item.description;
-        inputDesc.className = 'w-full border rounded p-1';
-        inputDesc.oninput = (e) => updateItem(index, 'description', e.target.value);
-        tdDesc.appendChild(inputDesc);
-        tr.appendChild(tdDesc);
-
-        // Množství
-        const tdQty = document.createElement('td');
-        tdQty.className = 'p-2 text-right';
-        const inputQty = document.createElement('input');
-        inputQty.type = 'number';
-        inputQty.min = '0';
-        inputQty.value = item.quantity;
-        inputQty.className = 'w-20 border rounded p-1 text-right';
-        inputQty.oninput = (e) => updateItem(index, 'quantity', e.target.value);
-        tdQty.appendChild(inputQty);
-        tr.appendChild(tdQty);
-
-        // Cena/ks
-        const tdPrice = document.createElement('td');
-        tdPrice.className = 'p-2 text-right';
-        const inputPrice = document.createElement('input');
-        inputPrice.type = 'number';
-        inputPrice.min = '0';
-        inputPrice.step = '0.01';
-        inputPrice.value = item.price;
-        inputPrice.className = 'w-24 border rounded p-1 text-right';
-        inputPrice.oninput = (e) => updateItem(index, 'price', e.target.value);
-        tdPrice.appendChild(inputPrice);
-        tr.appendChild(tdPrice);
-
-        // Celkem
-        const tdTotal = document.createElement('td');
-        tdTotal.className = 'p-2 text-right font-semibold';
-        const total = (item.quantity * item.price) || 0;
-        tdTotal.textContent = total.toFixed(2) + ' Kč';
-        tr.appendChild(tdTotal);
-
-        // Akce - smazat
-        const tdAction = document.createElement('td');
-        tdAction.className = 'p-2 text-center';
-        const btnDelete = document.createElement('button');
-        btnDelete.textContent = 'Smazat';
-        btnDelete.className = 'bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600';
-        btnDelete.onclick = () => removeItem(index);
-        tdAction.appendChild(btnDelete);
-        tr.appendChild(tdAction);
-
-        tbody.appendChild(tr);
-
-        // Mobilní zobrazení
-        const mobileItem = document.createElement('div');
-        mobileItem.className = 'border rounded p-3 bg-gray-50';
-
-        const descInputMobile = document.createElement('input');
-        descInputMobile.type = 'text';
-        descInputMobile.value = item.description;
-        descInputMobile.placeholder = 'Popis';
-        descInputMobile.className = 'w-full border rounded p-1 mb-2';
-        descInputMobile.oninput = (e) => updateItem(index, 'description', e.target.value);
-        mobileItem.appendChild(descInputMobile);
-
-        const qtyInputMobile = document.createElement('input');
-        qtyInputMobile.type = 'number';
-        qtyInputMobile.min = '0';
-        qtyInputMobile.value = item.quantity;
-        qtyInputMobile.placeholder = 'Množství';
-        qtyInputMobile.className = 'w-full border rounded p-1 mb-2 text-right';
-        qtyInputMobile.oninput = (e) => updateItem(index, 'quantity', e.target.value);
-        mobileItem.appendChild(qtyInputMobile);
-
-        const priceInputMobile = document.createElement('input');
-        priceInputMobile.type = 'number';
-        priceInputMobile.min = '0';
-        priceInputMobile.step = '0.01';
-        priceInputMobile.value = item.price;
-        priceInputMobile.placeholder = 'Cena/ks';
-        priceInputMobile.className = 'w-full border rounded p-1 mb-2 text-right';
-        priceInputMobile.oninput = (e) => updateItem(index, 'price', e.target.value);
-        mobileItem.appendChild(priceInputMobile);
-
-        const totalMobile = document.createElement('div');
-        totalMobile.className = 'text-right font-semibold mb-2';
-        totalMobile.textContent = 'Celkem: ' + total.toFixed(2) + ' Kč';
-        mobileItem.appendChild(totalMobile);
-
-        const btnDeleteMobile = document.createElement('button');
-        btnDeleteMobile.textContent = 'Smazat';
-        btnDeleteMobile.className = 'bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 w-full';
-        btnDeleteMobile.onclick = () => removeItem(index);
-        mobileItem.appendChild(btnDeleteMobile);
-
-        mobileDiv.appendChild(mobileItem);
+    } }
+    function renderItems(){
+      const tb=document.getElementById('items'), mb=document.getElementById('itemsMobile'); tb.innerHTML=''; mb.innerHTML='';
+      items.forEach((it,i)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td class="p-2"><input type="text" value="${it.description}" class="w-full border rounded p-1" onchange="updateItem(${i},'description',this.value)"></td>
+          <td class="p-2 text-right"><input type="number" min="0" value="${it.quantity}" class="w-32 border rounded p-1 text-right" onchange="updateItem(${i},'quantity',this.value)"></td>
+          <td class="p-2 text-right"><input type="number" min="0" step="0.01" value="${it.price}" class="w-32 border rounded p-1 text-right" onchange="updateItem(${i},'price',this.value)"></td>
+          <td class="p-2 text-right font-semibold">${(it.quantity*it.price).toFixed(2)} Kč</td>
+          <td class="p-2 text-center"><button class="bg-red-500 text-white px-2 py-1 rounded" onclick="removeItem(${i})">Smazat</button></td>`;
+        tb.appendChild(tr);
+        const md=document.createElement('div'); md.className='border rounded p-3 bg-gray-50';
+        md.innerHTML=`<input type="text" value="${it.description}" class="w-full border rounded p-1 mb-2" placeholder="Popis" onchange="updateItem(${i},'description',this.value)">
+          <input type="number" min="0" value="${it.quantity}" class="w-full border rounded p-1 mb-2 text-right" placeholder="Množství" onchange="updateItem(${i},'quantity',this.value)">
+          <input type="number" min="0" step="0.01" value="${it.price}" class="w-full border rounded p-1 mb-2 text-right" placeholder="Cena/ks" onchange="updateItem(${i},'price',this.value)">
+          <div class="text-right font-semibold mb-2">Celkem: ${(it.quantity*it.price).toFixed(2)} Kč</div>
+          <button class="w-full bg-red-500 text-white p-1 rounded" onclick="removeItem(${i})">Smazat</button>`;
+        mb.appendChild(md);
       });
-
-      // Pokud není žádná položka, zobrazíme prázdnou řádku nebo text
-      if (items.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="text-center p-4 text-gray-500">Žádné položky</td></tr>';
-        mobileDiv.innerHTML = '<div class="text-center p-4 text-gray-500">Žádné položky</div>';
-      }
+      if(!items.length){ tb.innerHTML='<tr><td colspan="5" class="text-center p-4 text-gray-500">Žádné položky</td></tr>'; mb.innerHTML='<div class="text-center p-4 text-gray-500">Žádné položky</div>'; }
     }
-
-    // Výpočet součtů a slevy
-    function calculateTotals() {
-      const subtotal = items.reduce((sum, i) => sum + (i.quantity * i.price), 0);
-      const slevaPercent = parseFloat(document.getElementById('sleva').value) || 0;
-      const slevaCastka = subtotal * (slevaPercent / 100);
-      const bezDPH = subtotal - slevaCastka;
-      const dphCastka = bezDPH * 0.21;
-      const grandTotal = bezDPH + dphCastka;
-
-      document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' Kč';
-      document.getElementById('slevaCastka').textContent = slevaCastka.toFixed(2) + ' Kč';
-      document.getElementById('bezDPH').textContent = bezDPH.toFixed(2) + ' Kč';
-      document.getElementById('dphCastka').textContent = dphCastka.toFixed(2) + ' Kč';
-      document.getElementById('grandTotal').textContent = grandTotal.toFixed(2) + ' Kč';
+    function calculateTotals(){
+      const sub=items.reduce((s,it)=>s+it.quantity*it.price,0);
+      const sle=parseFloat(document.getElementById('sleva').value)||0;
+      const slec=sub*sle/100; const bez=sub-slec; const dph=bez*0.21; const tot=bez+dph;
+      document.getElementById('subtotal').textContent=sub.toFixed(2)+ ' Kč';
+      document.getElementById('slevaCastka').textContent=slec.toFixed(2)+ ' Kč';
+      document.getElementById('bezDPH').textContent=bez.toFixed(2)+ ' Kč';
+      document.getElementById('dphCastka').textContent=dph.toFixed(2)+ ' Kč';
+      document.getElementById('grandTotal').textContent=tot.toFixed(2)+ ' Kč';
     }
-
-    // Validace povinných polí před akcemi
-    function validateForm() {
-      const povinne = [
-        { id: 'nazevFirmy', name: 'Název firmy' },
-        { id: 'icoFirmy', name: 'IČO firmy' },
-        { id: 'emailFirmy', name: 'E-mail firmy' },
-        { id: 'nazevZakaznika', name: 'Název zákazníka' },
-        { id: 'emailZakaznika', name: 'E-mail zákazníka' },
-      ];
-      for (const field of povinne) {
-        const el = document.getElementById(field.id);
-        if (!el.value.trim()) {
-          alert(`Chybí povinné pole: ${field.name}`);
-          el.focus();
-          return false;
-        }
-      }
-      if (items.length === 0) {
-        alert('Musíte přidat alespoň jednu položku nabídky.');
-        return false;
-      }
-      return true;
-    }
-
-    // Uložit nabídku do JSON souboru
-    function saveOffer() {
-      const data = {
-        firma: {
-          nazev: document.getElementById('nazevFirmy').value,
-          ico: document.getElementById('icoFirmy').value,
-          adresa: document.getElementById('adresaFirmy').value,
-          email: document.getElementById('emailFirmy').value,
-          telefon: document.getElementById('telefonFirmy').value,
-        },
-        zakaznik: {
-          nazev: document.getElementById('nazevZakaznika').value,
-          ico: document.getElementById('icoZakaznika').value,
-          adresa: document.getElementById('adresaZakaznika').value,
-          email: document.getElementById('emailZakaznika').value,
-        },
-        polozky: items,
-        sleva: parseFloat(document.getElementById('sleva').value) || 0,
-        poznamka: document.getElementById('poznamka').value,
-      };
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'nabidka.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    // Načíst nabídku ze souboru JSON
-    document.getElementById('loadInput').addEventListener('change', function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function () {
-        try {
-          const data = JSON.parse(reader.result);
-          document.getElementById('nazevFirmy').value = data.firma.nazev || '';
-          document.getElementById('icoFirmy').value = data.firma.ico || '';
-          document.getElementById('adresaFirmy').value = data.firma.adresa || '';
-          document.getElementById('emailFirmy').value = data.firma.email || '';
-          document.getElementById('telefonFirmy').value = data.firma.telefon || '';
-
-          document.getElementById('nazevZakaznika').value = data.zakaznik.nazev || '';
-          document.getElementById('icoZakaznika').value = data.zakaznik.ico || '';
-          document.getElementById('adresaZakaznika').value = data.zakaznik.adresa || '';
-          document.getElementById('emailZakaznika').value = data.zakaznik.email || '';
-
-          items = data.polozky || [];
-          document.getElementById('sleva').value = data.sleva || 0;
-          document.getElementById('poznamka').value = data.poznamka || '';
-
-          renderItems();
-          calculateTotals();
-        } catch {
-          alert('Nepodařilo se načíst nabídku - neplatný formát.');
-        }
-      };
-      reader.readAsText(file);
-    });
-
-    // Export do PDF
-    function exportPDF() {
-      const element = document.getElementById('nabidka');
-      html2pdf().set({ margin: 0.5, filename: 'nabidka.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 } }).from(element).save();
-    }
-
-    // Odeslat e-mail (otevře mailto s předvyplněným textem)
-    function sendEmail() {
-      const subject = encodeURIComponent('Cenová nabídka');
-      const bodyText = 'Dobrý den,\n\nv příloze zasílám cenovou nabídku.\n\nS pozdravem';
-      const email = document.getElementById('emailZakaznika').value.trim();
-      if (!email) {
-        alert('Zadejte prosím e-mail zákazníka.');
-        return;
-      }
-      window.location.href = `mailto:${email}?subject=${subject}&body=${encodeURIComponent(bodyText)}`;
-    }
-
-    // Přidání položky po kliknutí na tlačítko
-    document.getElementById('addItem').addEventListener('click', () => addItem());
-
-    // Sleva přepočítá součty ihned
-    document.getElementById('sleva').addEventListener('input', calculateTotals);
-
-    // Na začátku vykreslí prázdné položky
-    renderItems();
-    calculateTotals();
+    function validateForm(){ const req=['nazevFirmy','icoFirmy','emailFirmy','nazevZakaznika','emailZakaznika','adresaFirmy','adresaZakaznika']; for(const id of req){const e=document.getElementById(id);if(!e.value.trim()){alert('Vyplňte '+id);e.focus();return false;}} if(!items.length){alert('Přidejte položku.');return false;} return true; }
+    function saveOffer(){ const data={firma:{nazev:document.getElementById('nazevFirmy').value,ico:document.getElementById('icoFirmy').value,adresa:document.getElementById('adresaFirmy').value,email:document.getElementById('emailFirmy').value,telefon:document.getElementById('telefonFirmy').value},zakaznik:{nazev:document.getElementById('nazevZakaznika').value,ico:document.getElementById('icoZakaznika').value,adresa:document.getElementById('adresaZakaznika').value,email:document.getElementById('emailZakaznika').value},polozky:items,sleva:parseFloat(document.getElementById('sleva').value)||0,poznamka:document.getElementById('poznamka').value};const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='nabidka.json';a.click();URL.revokeObjectURL(u);}    
+    document.getElementById('loadInput').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);document.getElementById('nazevFirmy').value=d.firma.nazev||'';document.getElementById('icoFirmy').value=d.firma.ico||'';document.getElementById('adresaFirmy').value=d.firma.adresa||'';document.getElementById('emailFirmy').value=d.firma.email||'';document.getElementById('telefonFirmy').value=d.firma.telefon||'';document.getElementById('nazevZakaznika').value=d.zakaznik.nazev||'';document.getElementById('icoZakaznika').value=d.zakaznik.ico||'';document.getElementById('adresaZakaznika').value=d.zakaznik.adresa||'';document.getElementById('emailZakaznika').value=d.zakaznik.email||'';items=d.polozky||[];document.getElementById('sleva').value=d.sleva||0;document.getElementById('poznamka').value=d.poznamka||'';renderItems();calculateTotals();}catch{alert('Chyba načtení');}};r.readAsText(f);});
+    function exportPDF(){ html2pdf().set({margin:0.5,filename:'nabidka.pdf',image:{type:'jpeg',quality:0.98},html2canvas:{scale:2}}).from(document.getElementById('nabidka')).save(); }
+    function sendEmail(){const subj=encodeURIComponent('Cenová nabídka'),body=encodeURIComponent('Dobrý den,%0D%0A v příloze je cenová nabídka.'),to=document.getElementById('emailZakaznika').value; if(!to){alert('Zadejte e-mail zákazníka');return;}window.location.href=`mailto:${to}?subject=${subj}&body=${body}`;}    
+    document.getElementById('addItem').addEventListener('click',()=>addItem());
+    document.getElementById('sleva').addEventListener('input',calculateTotals);
+    renderItems(); calculateTotals();
   </script>
 </body>
 </html>
