@@ -8,7 +8,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-gray-100 p-6">
-  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8" id="nabidka">
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6 md:p-8" id="nabidka">
     <h1 class="text-2xl font-bold mb-4">Cenová nabídka</h1>
 
     <!-- Údaje o firmě -->
@@ -19,7 +19,7 @@
       </div>
       <div>
         <label class="block text-sm font-medium">IČO <span class="text-red-500">*</span></label>
-        <input type="text" id="icoFirmy" class="mt-1 w-full border rounded p-2" placeholder="12345678" onblur="fetchDataFromAres('icoFirmy', 'nazevFirmy')">
+        <input type="text" id="icoFirmy" class="mt-1 w-full border rounded p-2" placeholder="12345678">
       </div>
       <div>
         <label class="block text-sm font-medium">E-mail <span class="text-red-500">*</span></label>
@@ -44,33 +44,59 @@
       </div>
       <div>
         <label class="block text-sm font-medium">IČO</label>
-        <input type="text" id="icoZakaznika" class="mt-1 w-full border rounded p-2" placeholder="87654321" onblur="fetchDataFromAres('icoZakaznika', 'nazevZakaznika')">
+        <input type="text" id="icoZakaznika" class="mt-1 w-full border rounded p-2" placeholder="87654321">
       </div>
     </div>
 
     <!-- Tabulka položek -->
     <h2 class="text-xl font-semibold mb-2">Položky nabídky</h2>
-    <table class="w-full text-sm border mt-2 mb-4">
-      <thead class="bg-gray-200">
-        <tr>
-          <th class="p-2 text-left">Popis</th>
-          <th class="p-2 text-right">Množství</th>
-          <th class="p-2 text-right">Cena/ks</th>
-          <th class="p-2 text-right">Celkem</th>
-          <th class="p-2 text-center">Akce</th>
-        </tr>
-      </thead>
-      <tbody id="items">
-        <tr>
-          <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A"></td>
-          <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="1"></td>
-          <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="0"></td>
-          <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-          <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button id="addItem" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+ Přidat položku</button>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm border hidden md:table">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="p-2 text-left">Popis</th>
+            <th class="p-2 text-right">Množství</th>
+            <th class="p-2 text-right">Cena/ks</th>
+            <th class="p-2 text-right">Celkem</th>
+            <th class="p-2 text-center">Akce</th>
+          </tr>
+        </thead>
+        <tbody id="items" class="md:table-row-group">
+          <tr>
+            <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A"></td>
+            <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="1"></td>
+            <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="0"></td>
+            <td class="p-2 text-right text-gray-600 total">0 Kč</td>
+            <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Mobilní zobrazení -->
+      <div id="itemsMobile" class="space-y-4 md:hidden">
+        <div class="bg-gray-50 p-4 rounded shadow">
+          <label class="block text-sm">Popis</label>
+          <input type="text" class="w-full border rounded p-1 mb-2" placeholder="Např. Služba A">
+          <div class="flex gap-2 mb-2">
+            <div class="flex-1">
+              <label class="block text-sm">Množství</label>
+              <input type="number" class="w-full border rounded p-1 text-right qty" value="1">
+            </div>
+            <div class="flex-1">
+              <label class="block text-sm">Cena/ks</label>
+              <input type="number" class="w-full border rounded p-1 text-right price" value="0">
+            </div>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="font-medium">Celkem:</span>
+            <span class="total">0 Kč</span>
+          </div>
+          <button class="mt-2 text-red-500 remove">✕ Odebrat</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="addItem" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mt-4">+ Přidat položku</button>
 
     <!-- Sleva -->
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
@@ -115,26 +141,6 @@
         }
       }
       return true;
-    }
-
-    function fetchDataFromAres(inputId, outputId) {
-      const ico = document.getElementById(inputId).value.trim();
-      if (!ico || ico.length < 8) return;
-
-      fetch(`https://data.cssz.cz/ares/${ico}`)
-        .then(res => {
-          if (!res.ok) throw new Error('Chyba při načítání dat');
-          return res.json();
-        })
-        .then(data => {
-          const nazev = data?.obchodniJmeno || data?.nazev || '';
-          if (nazev && document.getElementById(outputId)) {
-            document.getElementById(outputId).value = nazev;
-          }
-        })
-        .catch(() => {
-          console.warn('Nepodařilo se načíst údaje z ARES.');
-        });
     }
   </script>
 </body>
