@@ -145,11 +145,26 @@
     // Update a single item without full re-render
     function updateItem(index, field, value) {
       if (field === 'quantity' || field === 'price') {
-        // Allow multi-digit entry without losing focus
         items[index][field] = parseFloat(value) || 0;
       } else {
         items[index][field] = value;
       }
+      // Update specific row total without full re-render
+      const row = document.querySelectorAll('#items tr')[index];
+      if (row) {
+        const totalCell = row.querySelector('.item-total');
+        const item = items[index];
+        totalCell.textContent = (item.quantity * item.price).toFixed(2) + ' Kč';
+      }
+      // Update mobile total
+      const mobileCard = document.getElementById('itemsMobile').children[index];
+      if (mobileCard) {
+        const mobTotal = mobileCard.querySelector('.mobile-total');
+        const item = items[index];
+        mobTotal.textContent = 'Celkem: ' + (item.quantity * item.price).toFixed(2) + ' Kč';
+      }
+      calculateTotals();
+    }
       calculateTotals();
     }
 
