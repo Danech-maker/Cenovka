@@ -2,366 +2,294 @@
 <html lang="cs">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cenovka – Nová nabídka</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Cenová nabídka</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    /* Jednoduché základní styly */
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ddd; padding: 6px; }
+    th { background-color: #f0f0f0; }
+    input[type="text"], input[type="number"], input[type="email"] {
+      width: 100%; box-sizing: border-box; padding: 4px;
+    }
+    button { cursor: pointer; padding: 6px 10px; margin-top: 10px; }
+  </style>
 </head>
-<body class="bg-gray-100 p-6">
-  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8" id="nabidka">
-    <h1 class="text-2xl font-bold mb-4">Cenová nabídka</h1>
+<body>
+  <h1>Cenová nabídka</h1>
 
-    <!-- Údaje o firmě -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div>
-        <label class="block text-sm font-medium">Název firmy</label>
-        <input type="text" id="nazevFirmy" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o." />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">IČO</label>
-        <input type="text" id="icoFirmy" class="mt-1 w-full border rounded p-2" placeholder="12345678" />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">E-mail</label>
-        <input type="email" id="emailFirmy" class="mt-1 w-full border rounded p-2" placeholder="firma@email.cz" />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">Telefon</label>
-        <input type="tel" id="telefonFirmy" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789" />
-      </div>
-    </div>
+  <section>
+    <h2>Firma (prodávající)</h2>
+    <label>IČ firmy: <input id="icoFirmy" maxlength="8" /></label><br/>
+    <label>Název firmy: <input id="nazevFirmy" /></label><br/>
+    <label>Adresa firmy: <input id="adresaFirmy" /></label><br/>
+    <label>Email firmy: <input id="emailFirmy" type="email" /></label><br/>
+    <label>Telefon firmy: <input id="telefonFirmy" /></label>
+  </section>
 
-    <!-- Údaje zákazníka -->
-    <h2 class="text-xl font-semibold mb-2 mt-4">Zákazník</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div>
-        <label class="block text-sm font-medium">Jméno / Firma</label>
-        <input type="text" id="zakaznikJmeno" class="mt-1 w-full border rounded p-2" placeholder="Zákazník s.r.o." />
-      </div>
-      <div>
-        <label class="block text-sm font-medium">E-mail</label>
-        <input type="email" id="zakaznikEmail" class="mt-1 w-full border rounded p-2" placeholder="zakaznik@email.cz" />
-      </div>
-    </div>
+  <section>
+    <h2>Zákazník</h2>
+    <label>IČ zákazníka: <input id="icoZakaznika" maxlength="8" /></label><br/>
+    <label>Název zákazníka: <input id="zakaznikNazev" /></label><br/>
+    <label>Adresa zákazníka: <input id="zakaznikAdresa" /></label><br/>
+    <label>Email zákazníka: <input id="zakaznikEmail" type="email" /></label><br/>
+    <label>Telefon zákazníka: <input id="zakaznikTelefon" /></label>
+  </section>
 
-    <!-- Tabulka položek -->
-    <h2 class="text-xl font-semibold mb-2">Položky nabídky</h2>
-    <table class="w-full text-sm border mt-2 mb-4">
-      <thead class="bg-gray-200">
+  <section>
+    <h2>Položky</h2>
+    <table>
+      <thead>
         <tr>
-          <th class="p-2 text-left">Popis</th>
-          <th class="p-2 text-right">Množství</th>
-          <th class="p-2 text-right">Cena/ks</th>
-          <th class="p-2 text-right">Celkem</th>
-          <th class="p-2 text-center">Akce</th>
+          <th>Popis</th>
+          <th>Množství</th>
+          <th>Cena za ks (Kč)</th>
+          <th>Celkem</th>
+          <th></th>
         </tr>
       </thead>
-      <tbody id="items">
-        <tr>
-          <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A" /></td>
-          <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="1" min="0" /></td>
-          <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="0" min="0" step="0.01" /></td>
-          <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-          <td class="p-2 text-center">
-            <button class="text-red-500 remove">✕</button>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="items"></tbody>
     </table>
-    <button id="addItem" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+ Přidat položku</button>
+    <button id="addItem">Přidat položku</button>
+  </section>
 
-    <!-- Sleva -->
-    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-      <div>
-        <label class="block text-sm font-medium">Sleva (%)</label>
-        <input type="number" id="sleva" class="w-32 border rounded p-2 mt-1" value="0" min="0" max="100" />
-      </div>
+  <section>
+    <label>Sleva (%) <input id="sleva" type="number" min="0" max="100" value="0" /></label><br/>
+    <label>Poznámka:<br/>
+      <textarea id="poznamka" rows="3" style="width:100%"></textarea>
+    </label>
+  </section>
 
-      <!-- Forma ceny -->
-      <div>
-        <label class="block text-sm font-medium">Forma ceny</label>
-        <select id="cenaForma" class="mt-1 w-48 border rounded p-2">
-          <option value="bez">Ceny jsou bez DPH</option>
-          <option value="s">Ceny jsou s DPH</option>
-        </select>
-      </div>
+  <section>
+    <h2>Souhrn</h2>
+    <p>Celkem bez DPH: <span id="celkemBezDph">0 Kč</span></p>
+    <p>Sleva: <span id="slevaCastka">0 Kč</span></p>
+    <p>Celkem po slevě: <span id="celkemPoSleve">0 Kč</span></p>
+  </section>
 
-      <div class="text-right text-lg font-semibold col-span-2">
-        Celkem: <span id="grandTotal">0 Kč</span><br />
-        Po slevě: <span id="discountedTotal">0 Kč</span><br />
-        Základ bez DPH: <span id="zaklad">0 Kč</span><br />
-        DPH (21 %): <span id="dph">0 Kč</span><br />
-        Celkem s DPH: <span id="celkemDPH">0 Kč</span>
-      </div>
-    </div>
+  <section>
+    <button onclick="exportPDF()">Exportovat do PDF</button>
+    <input type="file" id="loadInput" accept=".json" />
+  </section>
 
-    <!-- Poznámka -->
-    <div class="mt-6">
-      <label class="block text-sm font-medium">Poznámka</label>
-      <textarea id="poznamka" class="w-full border rounded p-2 mt-1" rows="3" placeholder="Děkujeme za Váš zájem."></textarea>
-    </div>
+<script>
+  // --- Přidání nové položky ---
+  function addItemRow() {
+    const tbody = document.getElementById("items");
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><input type="text" class="popis" /></td>
+      <td><input type="number" class="qty" min="0" value="0" /></td>
+      <td><input type="number" class="price" min="0" value="0" /></td>
+      <td class="total">0 Kč</td>
+      <td><button class="remove">✕</button></td>
+    `;
+    tbody.appendChild(tr);
+  }
 
-    <div class="flex flex-wrap justify-end items-center gap-4 mt-6">
-      <button onclick="saveOffer()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Uložit</button>
-      <input type="file" id="loadInput" accept=".json" hidden />
-      <button onclick="document.getElementById('loadInput').click()" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Načíst nabídku</button>
-      <button onclick="window.print()" class="bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500">Náhled</button>
-      <button onclick="exportPDF()" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Exportovat do PDF</button>
-      <button onclick="sendEmail()" class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600">Odeslat e-mailem</button>
-    </div>
-  </div>
+  // --- Aktualizace cen ---
+  function updateTotals() {
+    const rows = document.querySelectorAll("#items tr");
+    let celkem = 0;
+    rows.forEach(row => {
+      const qty = parseFloat(row.querySelector(".qty").value) || 0;
+      const price = parseFloat(row.querySelector(".price").value) || 0;
+      const total = qty * price;
+      row.querySelector(".total").textContent = total.toLocaleString("cs-CZ") + " Kč";
+      celkem += total;
+    });
+    document.getElementById("celkemBezDph").textContent = celkem.toLocaleString("cs-CZ") + " Kč";
 
-  <script>
-    // --- Funkce pro přidání nové položky ---
-    function addItemRow() {
-      const tbody = document.getElementById("items");
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A" /></td>
-        <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="1" min="0" /></td>
-        <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="0" min="0" step="0.01" /></td>
-        <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-        <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
-      `;
-      tbody.appendChild(tr);
-    }
+    const slevaProc = parseFloat(document.getElementById("sleva").value) || 0;
+    const slevaCastka = celkem * slevaProc / 100;
+    document.getElementById("slevaCastka").textContent = slevaCastka.toLocaleString("cs-CZ") + " Kč";
 
-    // --- Aktualizace celkových cen ---
-    function updateTotals() {
-      let rows = document.querySelectorAll("#items tr");
-      let grandTotal = 0;
+    const poSleve = celkem - slevaCastka;
+    document.getElementById("celkemPoSleve").textContent = poSleve.toLocaleString("cs-CZ") + " Kč";
+  }
 
-      rows.forEach((row) => {
-        const qtyInput = row.querySelector(".qty");
-        const priceInput = row.querySelector(".price");
-        const totalCell = row.querySelector(".total");
-
-        const qty = qtyInput ? qtyInput.valueAsNumber || 0 : 0;
-        const price = priceInput ? priceInput.valueAsNumber || 0 : 0;
-        const total = qty * price;
-
-        if (totalCell) {
-          totalCell.textContent = total.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
-        }
-        grandTotal += total;
+  // --- Sběr dat pro uložení ---
+  function collectOfferData() {
+    const items = [];
+    document.querySelectorAll("#items tr").forEach(row => {
+      items.push({
+        popis: row.querySelector(".popis").value.trim(),
+        mnozstvi: parseFloat(row.querySelector(".qty").value) || 0,
+        cena: parseFloat(row.querySelector(".price").value) || 0,
       });
+    });
+    return {
+      firma: {
+        ico: document.getElementById("icoFirmy").value.trim(),
+        nazev: document.getElementById("nazevFirmy").value.trim(),
+        adresa: document.getElementById("adresaFirmy").value.trim(),
+        email: document.getElementById("emailFirmy").value.trim(),
+        telefon: document.getElementById("telefonFirmy").value.trim(),
+      },
+      zakaznik: {
+        ico: document.getElementById("icoZakaznika").value.trim(),
+        nazev: document.getElementById("zakaznikNazev").value.trim(),
+        adresa: document.getElementById("zakaznikAdresa").value.trim(),
+        email: document.getElementById("zakaznikEmail").value.trim(),
+        telefon: document.getElementById("zakaznikTelefon").value.trim(),
+      },
+      polozky: items,
+      sleva: parseFloat(document.getElementById("sleva").value) || 0,
+      poznamka: document.getElementById("poznamka").value.trim(),
+    };
+  }
 
-      // Sleva a DPH
-      const sleva = Math.min(Math.max(document.getElementById("sleva").valueAsNumber || 0, 0), 100);
-      const cenaForma = document.getElementById("cenaForma").value;
-
-      // Pokud jsou ceny bez DPH, přidáme DPH (21%)
-      // Pokud jsou ceny s DPH, spočítáme základy a DPH zpětně
-      let zaklad = 0,
-        dph = 0,
-        celkem = 0;
-
-      if (cenaForma === "bez") {
-        zaklad = grandTotal;
-        dph = zaklad * 0.21;
-        celkem = zaklad + dph;
-      } else {
-        celkem = grandTotal;
-        zaklad = celkem / 1.21;
-        dph = celkem - zaklad;
+  // --- Načtení dat z JSON ---
+  document.getElementById("loadInput").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        loadOfferData(data);
+      } catch {
+        alert("Chybný formát souboru.");
       }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
 
-      const discountedCelkem = celkem * (1 - sleva / 100);
-      const discountedZaklad = zaklad * (1 - sleva / 100);
-      const discountedDph = dph * (1 - sleva / 100);
+  // --- Naplnění formuláře daty ---
+  function loadOfferData(data) {
+    if (!data) return;
 
-      document.getElementById("grandTotal").textContent = grandTotal.toLocaleString("cs-CZ", {
-        style: "currency",
-        currency: "CZK",
-      });
-      document.getElementById("discountedTotal").textContent = discountedCelkem.toLocaleString("cs-CZ", {
-        style: "currency",
-        currency: "CZK",
-      });
-      document.getElementById("zaklad").textContent = discountedZaklad.toLocaleString("cs-CZ", {
-        style: "currency",
-        currency: "CZK",
-      });
-      document.getElementById("dph").textContent = discountedDph.toLocaleString("cs-CZ", {
-        style: "currency",
-        currency: "CZK",
-      });
-      document.getElementById("celkemDPH").textContent = discountedCelkem.toLocaleString("cs-CZ", {
-        style: "currency",
-        currency: "CZK",
-      });
+    if (data.firma) {
+      document.getElementById("icoFirmy").value = data.firma.ico || "";
+      document.getElementById("nazevFirmy").value = data.firma.nazev || "";
+      document.getElementById("adresaFirmy").value = data.firma.adresa || "";
+      document.getElementById("emailFirmy").value = data.firma.email || "";
+      document.getElementById("telefonFirmy").value = data.firma.telefon || "";
     }
 
-    // --- Ukládání nabídky do souboru ---
-    function saveOffer() {
-      const nazevFirmy = document.getElementById("nazevFirmy").value.trim() || "bezNazvu";
-      const date = new Date();
-      const dateString = date.toISOString().slice(0, 10).replace(/-/g, "");
-      const filename = `Nabidka_${nazevFirmy}_${dateString}.json`;
+    if (data.zakaznik) {
+      document.getElementById("icoZakaznika").value = data.zakaznik.ico || "";
+      document.getElementById("zakaznikNazev").value = data.zakaznik.nazev || "";
+      document.getElementById("zakaznikAdresa").value = data.zakaznik.adresa || "";
+      document.getElementById("zakaznikEmail").value = data.zakaznik.email || "";
+      document.getElementById("zakaznikTelefon").value = data.zakaznik.telefon || "";
+    }
 
-      const data = {
-        firma: {
-          nazev: document.getElementById("nazevFirmy").value,
-          ico: document.getElementById("icoFirmy").value,
-          email: document.getElementById("emailFirmy").value,
-          telefon: document.getElementById("telefonFirmy").value,
-        },
-        zakaznik: {
-          jmeno: document.getElementById("zakaznikJmeno").value,
-          email: document.getElementById("zakaznikEmail").value,
-        },
-        polozky: [],
-        sleva: document.getElementById("sleva").value,
-        cenaForma: document.getElementById("cenaForma").value,
-        poznamka: document.getElementById("poznamka").value,
-      };
-
-      document.querySelectorAll("#items tr").forEach((row) => {
-        data.polozky.push({
-          popis: row.querySelector("td:nth-child(1) input").value,
-          mnozstvi: row.querySelector(".qty").value,
-          cena: row.querySelector(".price").value,
-        });
+    const tbody = document.getElementById("items");
+    tbody.innerHTML = "";
+    if (data.polozky && data.polozky.length) {
+      data.polozky.forEach((p) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input type="text" class="popis" value="${p.popis || ""}" /></td>
+          <td><input type="number" class="qty" min="0" value="${p.mnozstvi || 0}" /></td>
+          <td><input type="number" class="price" min="0" value="${p.cena || 0}" /></td>
+          <td class="total">0 Kč</td>
+          <td><button class="remove">✕</button></td>
+        `;
+        tbody.appendChild(tr);
       });
-
-      const jsonStr = JSON.stringify(data, null, 2);
-      const blob = new Blob([jsonStr], { type: "application/json" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(a.href);
+    } else {
+      addItemRow();
     }
 
-    // --- Načtení nabídky ze souboru ---
-    function loadOffer(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+    document.getElementById("sleva").value = data.sleva || 0;
+    document.getElementById("poznamka").value = data.poznamka || "";
+    updateTotals();
+  }
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        try {
-          const data = JSON.parse(e.target.result);
+  // --- Export do PDF ---
+  function exportPDF() {
+    const element = document.body;
+    const opt = {
+      margin: 0.5,
+      filename: "cenova_nabidka.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+    };
+    html2pdf().set(opt).from(element).save();
+  }
 
-          // Naplnit formulář
-          document.getElementById("nazevFirmy").value = data.firma?.nazev || "";
-          document.getElementById("icoFirmy").value = data.firma?.ico || "";
-          document.getElementById("emailFirmy").value = data.firma?.email || "";
-          document.getElementById("telefonFirmy").value = data.firma?.telefon || "";
+  // --- Odebrání položky ---
+  document.getElementById("items").addEventListener("click", (e) => {
+    if (e.target.classList.contains("remove")) {
+      e.target.closest("tr").remove();
+      updateTotals();
+    }
+  });
 
-          document.getElementById("zakaznikJmeno").value = data.zakaznik?.jmeno || "";
-          document.getElementById("zakaznikEmail").value = data.zakaznik?.email || "";
+  // --- Přidání položky ---
+  document.getElementById("addItem").addEventListener("click", () => {
+    addItemRow();
+  });
 
-          // Vymazat položky a načíst nové
-          const tbody = document.getElementById("items");
-          tbody.innerHTML = "";
-          if (Array.isArray(data.polozky)) {
-            data.polozky.forEach((polozka) => {
-              const tr = document.createElement("tr");
-              tr.innerHTML = `
-                <td class="p-2"><input type="text" class="w-full border rounded p-1" value="${polozka.popis || ""}" /></td>
-                <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="${polozka.mnozstvi || 1}" min="0" /></td>
-                <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="${polozka.cena || 0}" min="0" step="0.01" /></td>
-                <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-                <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
-              `;
-              tbody.appendChild(tr);
-            });
-          }
+  // --- Aktualizace cen při změně ---
+  document.getElementById("items").addEventListener("input", (e) => {
+    if (
+      e.target.classList.contains("qty") ||
+      e.target.classList.contains("price")
+    ) {
+      updateTotals();
+    }
+  });
 
-          document.getElementById("sleva").value = data.sleva || 0;
-          document.getElementById("cenaForma").value = data.cenaForma || "bez";
-          document.getElementById("poznamka").value = data.poznamka || "";
+  document.getElementById("sleva").addEventListener("input", updateTotals);
 
-          updateTotals();
-        } catch (err) {
-          alert("Chyba při načítání souboru: " + err.message);
-        }
-      };
-      reader.readAsText(file);
-      // Vyresetovat input, aby se soubor dal načíst i víckrát za sebou
-      event.target.value = "";
+  // --- Načtení dat z ARES podle IČ ---
+  async function fetchAresData(ico, targetPrefix) {
+    if (!ico || ico.length !== 8) {
+      return;
     }
 
-    // --- Export do PDF ---
-    function exportPDF() {
-      const element = document.getElementById("nabidka");
-      const opt = {
-        margin: 0.5,
-        filename: "cenova_nabidka.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-      };
-      html2pdf().set(opt).from(element).save();
-    }
+    const url = `https://wwwinfo.mfcr.cz/cgi-bin/ares/darv_bas.cgi?ico=${ico}`;
+    const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
 
-    // --- Odeslat e-mailem ---
-    function sendEmail() {
-      const nazevFirmy = document.getElementById("nazevFirmy").value.trim();
-      const zakaznikEmail = document.getElementById("zakaznikEmail").value.trim();
-      if (!zakaznikEmail) {
-        alert("Zadejte e-mail zákazníka pro odeslání.");
+    try {
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error("Chyba při načítání dat z ARES.");
+      const data = await response.json();
+
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+
+      const companyName = xmlDoc.querySelector("OF")?.textContent || "";
+      const street = xmlDoc.querySelector("AA > UC")?.textContent || "";
+      const buildingNumber = xmlDoc.querySelector("AA > CD")?.textContent || "";
+      const city = xmlDoc.querySelector("AA > N")?.textContent || "";
+      const postalCode = xmlDoc.querySelector("AA > PSC")?.textContent || "";
+
+      if (!companyName) {
+        alert(`Firma se IČ ${ico} nebyla nalezena.`);
         return;
       }
 
-      // Sestavení textu e-mailu
-      const subject = encodeURIComponent(`Cenová nabídka od ${nazevFirmy || "firma"}`);
-      let body = `Dobrý den,%0D%0A%0D%0Atímto zasíláme cenovou nabídku.%0D%0A%0D%0A`;
-
-      // Přidat položky
-      body += `Položky:%0D%0A`;
-      document.querySelectorAll("#items tr").forEach((row) => {
-        const popis = row.querySelector("td:nth-child(1) input").value || "";
-        const mnozstvi = row.querySelector(".qty").value || "";
-        const cena = row.querySelector(".price").value || "";
-        body += `- ${popis} | Množství: ${mnozstvi} | Cena/ks: ${cena} Kč%0D%0A`;
-      });
-
-      // Přidat celkové ceny
-      body += `%0D%0ACelkem: ${document.getElementById("discountedTotal").textContent}`;
-      body += `%0D%0ASleva: ${document.getElementById("sleva").value}%`;
-      body += `%0D%0APoznámka:%0D%0A${document.getElementById("poznamka").value}%0D%0A`;
-
-      // mailto
-      window.location.href = `mailto:${zakaznikEmail}?subject=${subject}&body=${body}`;
+      document.getElementById(`${targetPrefix}Nazev`).value = companyName;
+      document.getElementById(`${targetPrefix}Adresa`).value = `${street} ${buildingNumber}, ${postalCode} ${city}`;
+    } catch (error) {
+      alert("Chyba při načítání dat z ARES: " + error.message);
     }
+  }
 
-    // --- Eventy ---
-    document.getElementById("addItem").addEventListener("click", () => {
-      addItemRow();
-    });
+  // --- Event listener na změnu IČ firmy ---
+  document.getElementById("icoFirmy").addEventListener("change", (e) => {
+    fetchAresData(e.target.value.trim(), "nazevFirmy" in document.getElementById("nazevFirmy") ? "nazevFirmy" : "nazevFirmy");
+    fetchAresData(e.target.value.trim(), "firmy");
+  });
+  document.getElementById("icoFirmy").addEventListener("change", (e) => {
+    fetchAresData(e.target.value.trim(), "nazevFirmy");
+  });
 
-    document.getElementById("items").addEventListener("input", (e) => {
-      if (
-        e.target.classList.contains("qty") ||
-        e.target.classList.contains("price")
-      ) {
-        updateTotals();
-      }
-    });
+  // --- Event listener na změnu IČ zákazníka ---
+  document.getElementById("icoZakaznika").addEventListener("change", (e) => {
+    fetchAresData(e.target.value.trim(), "zakaznik");
+  });
 
-    document.getElementById("sleva").addEventListener("input", () => {
-      updateTotals();
-    });
-
-    document.getElementById("cenaForma").addEventListener("change", () => {
-      updateTotals();
-    });
-
-    // Odebrání položky
-    document.getElementById("items").addEventListener("click", (e) => {
-      if (e.target.classList.contains("remove")) {
-        e.target.closest("tr").remove();
-        updateTotals();
-      }
-    });
-
-    // Načítání souboru
-    document.getElementById("loadInput").addEventListener("change", loadOffer);
-
-    // Inicializace
-    updateTotals();
-  </script>
+  // --- Inicializace ---
+  addItemRow();
+  updateTotals();
+</script>
 </body>
 </html>
