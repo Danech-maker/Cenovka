@@ -1,51 +1,56 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cenovka – Nová nabídka</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </head>
 <body class="bg-gray-100 p-6">
-  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8">
+  <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8" id="offerContent">
     <h1 class="text-2xl font-bold mb-4">Vytvořit novou cenovou nabídku</h1>
 
     <!-- Údaje o firmě -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div id="companyInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
         <label class="block text-sm font-medium">Název firmy</label>
-        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o.">
+        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o." />
       </div>
       <div>
         <label class="block text-sm font-medium">IČO</label>
-        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="12345678">
+        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="12345678" />
       </div>
       <div>
         <label class="block text-sm font-medium">E-mail</label>
-        <input type="email" class="mt-1 w-full border rounded p-2" placeholder="firma@email.cz">
+        <input type="email" class="mt-1 w-full border rounded p-2" placeholder="firma@email.cz" />
       </div>
       <div>
         <label class="block text-sm font-medium">Telefon</label>
-        <input type="tel" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789">
+        <input type="tel" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789" />
       </div>
     </div>
 
     <!-- Údaje zákazníka -->
     <h2 class="text-xl font-semibold mb-2 mt-4">Zákazník</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div id="customerInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
         <label class="block text-sm font-medium">Jméno / Firma</label>
-        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="Zákazník s.r.o.">
+        <input type="text" class="mt-1 w-full border rounded p-2" placeholder="Zákazník s.r.o." />
       </div>
       <div>
         <label class="block text-sm font-medium">E-mail</label>
-        <input type="email" class="mt-1 w-full border rounded p-2" placeholder="zakaznik@email.cz">
+        <input type="email" class="mt-1 w-full border rounded p-2" placeholder="zakaznik@email.cz" />
       </div>
     </div>
 
     <!-- Tabulka položek -->
     <h2 class="text-xl font-semibold mb-2">Položky nabídky</h2>
-    <table class="w-full text-sm border mt-2 mb-4">
+    <table
+      class="w-full text-sm border mt-2 mb-4"
+      id="itemsTable"
+    >
       <thead class="bg-gray-200">
         <tr>
           <th class="p-2 text-left">Popis</th>
@@ -57,20 +62,44 @@
       </thead>
       <tbody id="items">
         <tr>
-          <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A"></td>
-          <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="1"></td>
-          <td class="p-2 text-right"><input type="number" class="w-24 border rounded p-1 text-right price" value="0"></td>
+          <td class="p-2">
+            <input
+              type="text"
+              class="w-full border rounded p-1"
+              placeholder="Např. Služba A"
+            />
+          </td>
+          <td class="p-2 text-right">
+            <input type="number" class="w-20 border rounded p-1 text-right qty" value="1" />
+          </td>
+          <td class="p-2 text-right">
+            <input type="number" class="w-24 border rounded p-1 text-right price" value="0" />
+          </td>
           <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-          <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
+          <td class="p-2 text-center">
+            <button class="text-red-500 remove">✕</button>
+          </td>
         </tr>
       </tbody>
     </table>
-    <button id="addItem" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">+ Přidat položku</button>
+    <button
+      id="addItem"
+      class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+    >
+      + Přidat položku
+    </button>
 
     <!-- Shrnutí -->
     <div class="mt-6">
-      <label class="block text-sm font-medium">Poznámka</label>
-      <textarea class="w-full border rounded p-2 mt-1" rows="3" placeholder="Děkujeme za Váš zájem."></textarea>
+      <label class="block text-sm font-medium"
+        ><input type="checkbox" id="includeNote" checked /> Zahrnout poznámku</label
+      >
+      <textarea
+        class="w-full border rounded p-2 mt-1"
+        rows="3"
+        placeholder="Děkujeme za Váš zájem."
+        id="noteText"
+      ></textarea>
     </div>
 
     <div class="text-right mt-4 text-lg font-semibold">
@@ -79,28 +108,37 @@
 
     <div class="flex justify-end items-center gap-4 mt-6">
       <button class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Uložit</button>
-      <button class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Exportovat do PDF</button>
+      <button
+        id="exportPdfBtn"
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+      >
+        Exportovat do PDF
+      </button>
     </div>
   </div>
 
   <script>
+    const { jsPDF } = window.jspdf;
+
     function updateTotals() {
-      let rows = document.querySelectorAll('#items tr');
+      let rows = document.querySelectorAll("#items tr");
       let grandTotal = 0;
-      rows.forEach(row => {
-        let qty = row.querySelector('.qty')?.valueAsNumber || 0;
-        let price = row.querySelector('.price')?.valueAsNumber || 0;
+      rows.forEach((row) => {
+        let qty = row.querySelector(".qty")?.valueAsNumber || 0;
+        let price = row.querySelector(".price")?.valueAsNumber || 0;
         let total = qty * price;
-        row.querySelector('.total').textContent = total.toLocaleString('cs-CZ') + ' Kč';
+        row.querySelector(".total").textContent =
+          total.toLocaleString("cs-CZ") + " Kč";
         grandTotal += total;
       });
-      document.getElementById('grandTotal').textContent = grandTotal.toLocaleString('cs-CZ') + ' Kč';
+      document.getElementById("grandTotal").textContent =
+        grandTotal.toLocaleString("cs-CZ") + " Kč";
     }
 
-    document.getElementById('items').addEventListener('input', updateTotals);
+    document.getElementById("items").addEventListener("input", updateTotals);
 
-    document.getElementById('addItem').addEventListener('click', () => {
-      let row = document.createElement('tr');
+    document.getElementById("addItem").addEventListener("click", () => {
+      let row = document.createElement("tr");
       row.innerHTML = `
         <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Popis"></td>
         <td class="p-2 text-right"><input type="number" class="w-20 border rounded p-1 text-right qty" value="1"></td>
@@ -108,20 +146,84 @@
         <td class="p-2 text-right text-gray-600 total">0 Kč</td>
         <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
       `;
-      document.getElementById('items').appendChild(row);
+      document.getElementById("items").appendChild(row);
       updateRemoveListeners();
     });
 
     function updateRemoveListeners() {
-      document.querySelectorAll('.remove').forEach(btn => {
+      document.querySelectorAll(".remove").forEach((btn) => {
         btn.onclick = function () {
-          this.closest('tr').remove();
+          this.closest("tr").remove();
           updateTotals();
         };
       });
     }
 
     updateRemoveListeners();
+
+    async function exportPDF() {
+      // Zeptej se na název souboru
+      let fileName = prompt("Zadejte název PDF souboru:", "cenova_nabidka");
+      if (!fileName) return;
+
+      // Vyber části pro tisk - firma, zákazník, tabulka, poznámka (pokud zaškrtnuto)
+      let container = document.createElement("div");
+      container.style.padding = "20px";
+      container.style.backgroundColor = "white";
+      container.style.width = "800px";
+
+      // Přidáme část firmy
+      let company = document.getElementById("companyInfo").cloneNode(true);
+      container.appendChild(company);
+
+      // Přidáme část zákazníka
+      let customer = document.getElementById("customerInfo").cloneNode(true);
+      container.appendChild(customer);
+
+      // Přidáme tabulku položek
+      let table = document.getElementById("itemsTable").cloneNode(true);
+      container.appendChild(table);
+
+      // Přidáme poznámku pokud je zaškrtnuto
+      if (document.getElementById("includeNote").checked) {
+        let noteSection = document.createElement("div");
+        noteSection.style.marginTop = "20px";
+        noteSection.innerHTML = `<strong>Poznámka:</strong><br>${document
+          .getElementById("noteText")
+          .value.replace(/\n/g, "<br>")}`;
+        container.appendChild(noteSection);
+      }
+
+      // Čistě nastavíme styly inputů a tlačítek, aby nevstoupily do PDF
+      container.querySelectorAll("input, button, textarea").forEach((el) => {
+        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+          // Zaměníme inputy za jejich hodnoty textem
+          let span = document.createElement("span");
+          span.textContent = el.value;
+          el.parentNode.replaceChild(span, el);
+        } else {
+          // Tlačítka odstraníme
+          el.remove();
+        }
+      });
+
+      // Použijeme html2canvas a jsPDF pro generování PDF
+      const canvas = await html2canvas(container, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "pt", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save(fileName + ".pdf");
+    }
+
+    document
+      .getElementById("exportPdfBtn")
+      .addEventListener("click", exportPDF);
+
+    updateTotals();
   </script>
 </body>
 </html>
