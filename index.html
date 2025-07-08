@@ -11,48 +11,48 @@
   <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8" id="nabidka">
     <h1 class="text-2xl font-bold mb-4">Cenová nabídka</h1>
 
-    <!-- Údaje o firmě -->
+    <!-- Firma -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
-        <label class="block text-sm font-medium" for="firmyNazev">Název firmy</label>
-        <input type="text" id="firmyNazev" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o." />
-      </div>
-      <div>
-        <label class="block text-sm font-medium" for="firmyIco">IČO</label>
+        <label class="block text-sm font-medium">IČO firmy</label>
         <input type="text" id="firmyIco" class="mt-1 w-full border rounded p-2" placeholder="12345678" maxlength="8" />
       </div>
       <div>
-        <label class="block text-sm font-medium" for="firmyEmail">E-mail</label>
-        <input type="email" id="firmyEmail" class="mt-1 w-full border rounded p-2" placeholder="firma@email.cz" />
+        <label class="block text-sm font-medium">Název firmy</label>
+        <input type="text" id="firmyNazev" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o." />
       </div>
       <div>
-        <label class="block text-sm font-medium" for="firmyTelefon">Telefon</label>
-        <input type="tel" id="firmyTelefon" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789" />
+        <label class="block text-sm font-medium">Adresa firmy</label>
+        <input type="text" id="firmyAdresa" class="mt-1 w-full border rounded p-2" placeholder="Ulice 123, Město" />
       </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm font-medium" for="firmyAdresa">Adresa firmy</label>
-        <input type="text" id="firmyAdresa" class="mt-1 w-full border rounded p-2" placeholder="Ulice, číslo, PSČ, Město" />
+      <div>
+        <label class="block text-sm font-medium">E-mail firmy</label>
+        <input type="email" class="mt-1 w-full border rounded p-2" placeholder="firma@email.cz" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Telefon firmy</label>
+        <input type="tel" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789" />
       </div>
     </div>
 
-    <!-- Údaje zákazníka -->
+    <!-- Zákazník -->
     <h2 class="text-xl font-semibold mb-2 mt-4">Zákazník</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
       <div>
-        <label class="block text-sm font-medium" for="zakaznikNazev">Jméno / Firma</label>
-        <input type="text" id="zakaznikNazev" class="mt-1 w-full border rounded p-2" placeholder="Zákazník s.r.o." />
-      </div>
-      <div>
-        <label class="block text-sm font-medium" for="zakaznikIco">IČO</label>
+        <label class="block text-sm font-medium">IČO zákazníka</label>
         <input type="text" id="zakaznikIco" class="mt-1 w-full border rounded p-2" placeholder="12345678" maxlength="8" />
       </div>
       <div>
-        <label class="block text-sm font-medium" for="zakaznikEmail">E-mail</label>
-        <input type="email" id="zakaznikEmail" class="mt-1 w-full border rounded p-2" placeholder="zakaznik@email.cz" />
+        <label class="block text-sm font-medium">Název zákazníka</label>
+        <input type="text" id="zakaznikNazev" class="mt-1 w-full border rounded p-2" placeholder="Zákazník s.r.o." />
       </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm font-medium" for="zakaznikAdresa">Adresa zákazníka</label>
-        <input type="text" id="zakaznikAdresa" class="mt-1 w-full border rounded p-2" placeholder="Ulice, číslo, PSČ, Město" />
+      <div>
+        <label class="block text-sm font-medium">Adresa zákazníka</label>
+        <input type="text" id="zakaznikAdresa" class="mt-1 w-full border rounded p-2" placeholder="Ulice 456, Město" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">E-mail zákazníka</label>
+        <input type="email" class="mt-1 w-full border rounded p-2" placeholder="zakaznik@email.cz" />
       </div>
     </div>
 
@@ -63,26 +63,18 @@
         <tr>
           <th class="p-2 text-left">Popis</th>
           <th class="p-2 text-right">Množství</th>
-          <th class="p-2 text-right">Cena/ks</th>
-          <th class="p-2 text-right">Celkem</th>
+          <th class="p-2 text-right">Cena/ks (Kč)</th>
+          <th class="p-2 text-right">Celkem (Kč)</th>
           <th class="p-2 text-center">Akce</th>
         </tr>
       </thead>
       <tbody id="items">
         <tr>
-          <td class="p-2">
-            <input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A" />
-          </td>
-          <td class="p-2 text-right">
-            <input type="number" class="w-20 border rounded p-1 text-right qty" value="1" min="0" />
-          </td>
-          <td class="p-2 text-right">
-            <input type="number" class="w-24 border rounded p-1 text-right price" value="0" min="0" step="0.01" />
-          </td>
+          <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A" /></td>
+          <td class="p-2 text-right"><input type="number" min="0" class="w-20 border rounded p-1 text-right qty" value="1" /></td>
+          <td class="p-2 text-right"><input type="number" min="0" class="w-24 border rounded p-1 text-right price" value="0" /></td>
           <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-          <td class="p-2 text-center">
-            <button class="text-red-500 remove">✕</button>
-          </td>
+          <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
         </tr>
       </tbody>
     </table>
@@ -91,8 +83,8 @@
     <!-- Sleva -->
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
       <div>
-        <label class="block text-sm font-medium" for="sleva">Sleva (%)</label>
-        <input type="number" id="sleva" class="w-32 border rounded p-2 mt-1" value="0" min="0" max="100" />
+        <label class="block text-sm font-medium">Sleva (%)</label>
+        <input type="number" id="sleva" min="0" max="100" class="w-32 border rounded p-2 mt-1" value="0" />
       </div>
       <div class="text-right text-lg font-semibold">
         Celkem: <span id="grandTotal">0 Kč</span><br />
@@ -102,7 +94,7 @@
 
     <!-- Poznámka -->
     <div class="mt-6">
-      <label class="block text-sm font-medium" for="poznamka">Poznámka</label>
+      <label class="block text-sm font-medium">Poznámka</label>
       <textarea id="poznamka" class="w-full border rounded p-2 mt-1" rows="3" placeholder="Děkujeme za Váš zájem."></textarea>
     </div>
 
@@ -116,238 +108,232 @@
     </div>
   </div>
 
-  <script>
-    // --- Funkce pro získání dat z ARES přes proxy
-    async function fetchAresData(ico, targetPrefix) {
-      if (!ico || ico.length !== 8) {
-        return;
+<script>
+  // --- Funkce pro výpočet cen ---
+  function updateTotals() {
+    const rows = document.querySelectorAll("#items tr");
+    let grandTotal = 0;
+
+    rows.forEach(row => {
+      const qtyInput = row.querySelector(".qty");
+      const priceInput = row.querySelector(".price");
+      const totalCell = row.querySelector(".total");
+
+      const qty = parseFloat(qtyInput.value) || 0;
+      const price = parseFloat(priceInput.value) || 0;
+      const total = qty * price;
+
+      totalCell.textContent = total.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
+      grandTotal += total;
+    });
+
+    document.getElementById("grandTotal").textContent = grandTotal.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
+
+    const sleva = parseFloat(document.getElementById("sleva").value) || 0;
+    const discountedTotal = grandTotal * (1 - sleva / 100);
+    document.getElementById("discountedTotal").textContent = discountedTotal.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
+  }
+
+  // --- Přidání nové položky ---
+  document.getElementById("addItem").addEventListener("click", () => {
+    const tbody = document.getElementById("items");
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+      <td class="p-2"><input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A" /></td>
+      <td class="p-2 text-right"><input type="number" min="0" class="w-20 border rounded p-1 text-right qty" value="1" /></td>
+      <td class="p-2 text-right"><input type="number" min="0" class="w-24 border rounded p-1 text-right price" value="0" /></td>
+      <td class="p-2 text-right text-gray-600 total">0 Kč</td>
+      <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
+    `;
+    tbody.appendChild(newRow);
+    attachRowListeners(newRow);
+  });
+
+  // --- Odebrání položky ---
+  function attachRowListeners(row) {
+    row.querySelectorAll(".qty, .price").forEach(input => {
+      input.addEventListener("input", updateTotals);
+    });
+    row.querySelector(".remove").addEventListener("click", () => {
+      row.remove();
+      updateTotals();
+    });
+  }
+
+  // Připoj posluchače i na existující řádek
+  document.querySelectorAll("#items tr").forEach(row => attachRowListeners(row));
+
+  // Aktualizace celkových cen při změně slevy
+  document.getElementById("sleva").addEventListener("input", updateTotals);
+
+  // --- Ukládání do JSON ---
+  function saveOffer() {
+    const firma = {
+      ico: document.getElementById("firmyIco").value,
+      nazev: document.getElementById("firmyNazev").value,
+      adresa: document.getElementById("firmyAdresa").value,
+      email: document.querySelector("input[type='email']").value,
+      telefon: document.querySelector("input[type='tel']").value
+    };
+
+    const zakaznik = {
+      ico: document.getElementById("zakaznikIco").value,
+      nazev: document.getElementById("zakaznikNazev").value,
+      adresa: document.getElementById("zakaznikAdresa").value,
+      email: document.querySelectorAll("input[type='email']")[1].value
+    };
+
+    const items = [];
+    document.querySelectorAll("#items tr").forEach(row => {
+      const popis = row.querySelector("input[type='text']").value;
+      const mnozstvi = parseFloat(row.querySelector(".qty").value) || 0;
+      const cena = parseFloat(row.querySelector(".price").value) || 0;
+      if (popis.trim() !== "") {
+        items.push({ popis, mnozstvi, cena });
       }
+    });
 
-      const url = `https://wwwinfo.mfcr.cz/cgi-bin/ares/darv_bas.cgi?ico=${ico}`;
-      const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
+    const data = {
+      firma,
+      zakaznik,
+      items,
+      sleva: parseFloat(document.getElementById("sleva").value) || 0,
+      poznamka: document.getElementById("poznamka").value
+    };
 
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "nabidka.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // --- Načítání z JSON ---
+  document.getElementById("loadInput").addEventListener("change", e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
       try {
-        const response = await fetch(proxyUrl);
-        if (!response.ok) throw new Error("Chyba při načítání dat z ARES.");
-        const text = await response.text();
+        const data = JSON.parse(reader.result);
+        document.getElementById("firmyIco").value = data.firma.ico || "";
+        document.getElementById("firmyNazev").value = data.firma.nazev || "";
+        document.getElementById("firmyAdresa").value = data.firma.adresa || "";
+        // email a telefon firmy
+        const emails = document.querySelectorAll("input[type='email']");
+        emails[0].value = data.firma.email || "";
+        const telefons = document.querySelectorAll("input[type='tel']");
+        telefons[0].value = data.firma.telefon || "";
 
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(text, "text/xml");
+        document.getElementById("zakaznikIco").value = data.zakaznik.ico || "";
+        document.getElementById("zakaznikNazev").value = data.zakaznik.nazev || "";
+        document.getElementById("zakaznikAdresa").value = data.zakaznik.adresa || "";
+        emails[1].value = data.zakaznik.email || "";
 
-        const companyName = xmlDoc.querySelector("OF")?.textContent || "";
-        const street = xmlDoc.querySelector("AA > UC")?.textContent || "";
-        const buildingNumber = xmlDoc.querySelector("AA > CD")?.textContent || "";
-        const city = xmlDoc.querySelector("AA > N")?.textContent || "";
-        const postalCode = xmlDoc.querySelector("AA > PSC")?.textContent || "";
+        const tbody = document.getElementById("items");
+        tbody.innerHTML = "";
+        data.items.forEach(i => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td class="p-2"><input type="text" class="w-full border rounded p-1" value="${i.popis}" /></td>
+            <td class="p-2 text-right"><input type="number" min="0" class="w-20 border rounded p-1 text-right qty" value="${i.mnozstvi}" /></td>
+            <td class="p-2 text-right"><input type="number" min="0" class="w-24 border rounded p-1 text-right price" value="${i.cena}" /></td>
+            <td class="p-2 text-right text-gray-600 total">0 Kč</td>
+            <td class="p-2 text-center"><button class="text-red-500 remove">✕</button></td>
+          `;
+          tbody.appendChild(row);
+          attachRowListeners(row);
+        });
 
-        if (!companyName) {
-          alert(`Firma se IČ ${ico} nebyla nalezena.`);
-          return;
-        }
+        document.getElementById("sleva").value = data.sleva || 0;
+        document.getElementById("poznamka").value = data.poznamka || "";
 
-        document.getElementById(`${targetPrefix}Nazev`).value = companyName;
-        document.getElementById(`${targetPrefix}Adresa`).value = `${street} ${buildingNumber}, ${postalCode} ${city}`;
-      } catch (error) {
-        alert("Chyba při načítání dat z ARES: " + error.message);
-      }
-    }
-
-    // --- Event listenery pro IČ
-    document.getElementById("firmyIco").addEventListener("change", (e) => {
-      fetchAresData(e.target.value.trim(), "firmy");
-    });
-
-    document.getElementById("zakaznikIco").addEventListener("change", (e) => {
-      fetchAresData(e.target.value.trim(), "zakaznik");
-    });
-
-    // --- Výpočet ceny za položky a celkové sumy
-    function updateTotals() {
-      const rows = document.querySelectorAll("#items tr");
-      let grandTotal = 0;
-
-      rows.forEach((row) => {
-        const qtyInput = row.querySelector(".qty");
-        const priceInput = row.querySelector(".price");
-        const totalCell = row.querySelector(".total");
-
-        const qty = parseFloat(qtyInput.value) || 0;
-        const price = parseFloat(priceInput.value) || 0;
-        const total = qty * price;
-        grandTotal += total;
-
-        totalCell.textContent = total.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
-      });
-
-      document.getElementById("grandTotal").textContent = grandTotal.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
-
-      const discountPercent = parseFloat(document.getElementById("sleva").value) || 0;
-      const discountedTotal = grandTotal * (1 - discountPercent / 100);
-      document.getElementById("discountedTotal").textContent = discountedTotal.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" });
-    }
-
-    // --- Přidání položky do tabulky
-    document.getElementById("addItem").addEventListener("click", () => {
-      const tbody = document.getElementById("items");
-      const newRow = document.createElement("tr");
-      newRow.innerHTML = `
-        <td class="p-2">
-          <input type="text" class="w-full border rounded p-1" placeholder="Např. Služba A" />
-        </td>
-        <td class="p-2 text-right">
-          <input type="number" class="w-20 border rounded p-1 text-right qty" value="1" min="0" />
-        </td>
-        <td class="p-2 text-right">
-          <input type="number" class="w-24 border rounded p-1 text-right price" value="0" min="0" step="0.01" />
-        </td>
-        <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-        <td class="p-2 text-center">
-          <button class="text-red-500 remove">✕</button>
-        </td>
-      `;
-      tbody.appendChild(newRow);
-      attachRowListeners(newRow);
-      updateTotals();
-    });
-
-    // --- Přidání event listenerů na položky (pro změnu množství, ceny a mazání)
-    function attachRowListeners(row) {
-      row.querySelectorAll(".qty, .price").forEach((input) => {
-        input.addEventListener("input", updateTotals);
-      });
-      row.querySelector(".remove").addEventListener("click", () => {
-        row.remove();
         updateTotals();
-      });
-    }
-
-    // --- Přidat event listenery na existující řádek při načtení
-    document.querySelectorAll("#items tr").forEach(attachRowListeners);
-
-    // --- Sleva event
-    document.getElementById("sleva").addEventListener("input", updateTotals);
-
-    // --- Uložit nabídku do JSON
-    function saveOffer() {
-      const data = {
-        firmy: {
-          nazev: document.getElementById("firmyNazev").value,
-          ico: document.getElementById("firmyIco").value,
-          email: document.getElementById("firmyEmail").value,
-          telefon: document.getElementById("firmyTelefon").value,
-          adresa: document.getElementById("firmyAdresa").value
-        },
-        zakaznik: {
-          nazev: document.getElementById("zakaznikNazev").value,
-          ico: document.getElementById("zakaznikIco").value,
-          email: document.getElementById("zakaznikEmail").value,
-          adresa: document.getElementById("zakaznikAdresa").value
-        },
-        polozky: [],
-        sleva: parseFloat(document.getElementById("sleva").value) || 0,
-        poznamka: document.getElementById("poznamka").value
-      };
-
-      document.querySelectorAll("#items tr").forEach(row => {
-        const popis = row.cells[0].querySelector("input").value;
-        const mnozstvi = parseFloat(row.cells[1].querySelector("input").value) || 0;
-        const cena = parseFloat(row.cells[2].querySelector("input").value) || 0;
-        if(popis.trim() !== "" && mnozstvi > 0) {
-          data.polozky.push({ popis, mnozstvi, cena });
-        }
-      });
-
-      const json = JSON.stringify(data, null, 2);
-      const blob = new Blob([json], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "nabidka.json";
-      a.click();
-
-      URL.revokeObjectURL(url);
-    }
-
-    // --- Načíst nabídku z JSON
-    document.getElementById("loadInput").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          const data = JSON.parse(event.target.result);
-          loadOffer(data);
-        } catch {
-          alert("Soubor není validní JSON.");
-        }
-      };
-      reader.readAsText(file);
-    });
-
-    function loadOffer(data) {
-      document.getElementById("firmyNazev").value = data.firmy?.nazev || "";
-      document.getElementById("firmyIco").value = data.firmy?.ico || "";
-      document.getElementById("firmyEmail").value = data.firmy?.email || "";
-      document.getElementById("firmyTelefon").value = data.firmy?.telefon || "";
-      document.getElementById("firmyAdresa").value = data.firmy?.adresa || "";
-
-      document.getElementById("zakaznikNazev").value = data.zakaznik?.nazev || "";
-      document.getElementById("zakaznikIco").value = data.zakaznik?.ico || "";
-      document.getElementById("zakaznikEmail").value = data.zakaznik?.email || "";
-      document.getElementById("zakaznikAdresa").value = data.zakaznik?.adresa || "";
-
-      const tbody = document.getElementById("items");
-      tbody.innerHTML = "";
-
-      (data.polozky || []).forEach(polozka => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td class="p-2">
-            <input type="text" class="w-full border rounded p-1" value="${polozka.popis}" />
-          </td>
-          <td class="p-2 text-right">
-            <input type="number" class="w-20 border rounded p-1 text-right qty" value="${polozka.mnozstvi}" min="0" />
-          </td>
-          <td class="p-2 text-right">
-            <input type="number" class="w-24 border rounded p-1 text-right price" value="${polozka.cena}" min="0" step="0.01" />
-          </td>
-          <td class="p-2 text-right text-gray-600 total">0 Kč</td>
-          <td class="p-2 text-center">
-            <button class="text-red-500 remove">✕</button>
-          </td>
-        `;
-        tbody.appendChild(row);
-        attachRowListeners(row);
-      });
-
-      document.getElementById("sleva").value = data.sleva || 0;
-      document.getElementById("poznamka").value = data.poznamka || "";
-      updateTotals();
-    }
-
-    // --- Export PDF
-    function exportPDF() {
-      const element = document.getElementById("nabidka");
-      html2pdf().set({margin:0.5, filename: 'nabidka.pdf', image: {type: 'jpeg', quality: 0.98}}).from(element).save();
-    }
-
-    // --- Odeslání e-mailem (pouze přes mailto)
-    function sendEmail() {
-      const email = document.getElementById("firmyEmail").value.trim();
-      if (!email) {
-        alert("Zadejte e-mail firmy.");
-        return;
+      } catch (err) {
+        alert("Chyba při načítání souboru: " + err.message);
       }
-      const subject = encodeURIComponent("Cenová nabídka");
-      const body = encodeURIComponent("Dobrý den,\n\nv příloze zasíláme cenovou nabídku.\n\nS pozdravem\n");
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    };
+    reader.readAsText(file);
+  });
+
+  // --- Export do PDF ---
+  function exportPDF() {
+    const element = document.getElementById("nabidka");
+    html2pdf()
+      .set({
+        margin: 0.5,
+        filename: "cenova_nabidka.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "in", format: "a4", orientation: "portrait" }
+      })
+      .from(element)
+      .save();
+  }
+
+  // --- Odeslání e-mailem ---
+  function sendEmail() {
+    alert("Funkce odeslání e-mailem zatím není implementována.");
+  }
+
+  // --- Načítání údajů z ARES podle IČO ---
+  async function fetchAres(ico, nazevInputId, adresaInputId) {
+    if (!ico || ico.length !== 8) return;
+
+    try {
+      const res = await fetch(`/ares?ico=${ico}`);
+      if (!res.ok) throw new Error("Chyba při načítání dat z ARES");
+
+      const xmlText = await res.text();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, "text/xml");
+
+      // Nalezení uzlu s daty - ARES vrací XML se složitou strukturou, zkusíme získat název a adresu
+      const ns = xmlDoc.documentElement.namespaceURI;
+
+      function getNodeText(xpath) {
+        const node = xmlDoc.evaluate(xpath, xmlDoc, null, XPathResult.STRING_TYPE, null);
+        return node.stringValue.trim();
+      }
+
+      // XPathy pro název a adresu dle ARES struktury
+      const nazev = getNodeText("string(//D:Obchodni_firma | //are:Nazev | //dtt:Nazev | //dtt:Obchodni_firma)");
+      if (nazev) document.getElementById(nazevInputId).value = nazev;
+
+      // Adresa: kombinace ulice, cislo, obec, psc
+      // Postup podle struktury ARES (zkusíme co nejuniverzálnější)
+      const ulice = getNodeText("string(//D:Ulice | //dtt:Ulice)");
+      const cislo = getNodeText("string(//D:Cislo_popisne | //dtt:Cislo_popisne)");
+      const obec = getNodeText("string(//D:Obec | //dtt:Obec)");
+      const psc = getNodeText("string(//D:PSC | //dtt:PSC)");
+
+      let adresa = "";
+      if (ulice) adresa += ulice;
+      if (cislo) adresa += (adresa ? " " : "") + cislo;
+      if (obec) adresa += (adresa ? ", " : "") + obec;
+      if (psc) adresa += (adresa ? " " : "") + psc;
+
+      if (adresa) document.getElementById(adresaInputId).value = adresa;
+
+    } catch (e) {
+      console.warn("ARES data nenalezena nebo chyba:", e.message);
     }
+  }
 
-    // --- Inicializace
-    updateTotals();
+  // --- Naslouchání změn IČO a vyvolání ARES ---
+  document.getElementById("firmyIco").addEventListener("change", e => {
+    fetchAres(e.target.value, "firmyNazev", "firmyAdresa");
+  });
+  document.getElementById("zakaznikIco").addEventListener("change", e => {
+    fetchAres(e.target.value, "zakaznikNazev", "zakaznikAdresa");
+  });
 
-  </script>
+  // --- Inicializace ---
+  updateTotals();
+</script>
 </body>
 </html>
