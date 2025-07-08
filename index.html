@@ -13,12 +13,46 @@
 
     <!-- Údaje o firmě -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <!-- ... firm fields ... -->
+            <div>
+        <label class="block text-sm font-medium">Název firmy <span class="text-red-500">*</span></label>
+        <input type="text" id="nazevFirmy" class="mt-1 w-full border rounded p-2" placeholder="Firma s.r.o." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">IČO <span class="text-red-500">*</span></label>
+        <input type="text" id="icoFirmy" class="mt-1 w-full border rounded p-2" placeholder="12345678" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Adresa <span class="text-red-500">*</span></label>
+        <input type="text" id="adresaFirmy" class="mt-1 w-full border rounded p-2" placeholder="Ulice, město" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">E-mail <span class="text-red-500">*</span></label>
+        <input type="email" id="emailFirmy" class="mt-1 w-full border rounded p-2" placeholder="firma@email.cz" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Telefon</label>
+        <input type="tel" id="telefonFirmy" class="mt-1 w-full border rounded p-2" placeholder="+420 123 456 789" />
+      </div>
     </div>
     <!-- Údaje zákazníka -->
     <h2 class="text-xl font-semibold mb-2 mt-4">Zákazník</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <!-- ... customer fields ... -->
+      <div>
+        <label class="block text-sm font-medium">Jméno / Firma <span class="text-red-500">*</span></label>
+        <input type="text" id="nazevZakaznika" class="mt-1 w-full border rounded p-2" placeholder="Zákazník s.r.o." />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">E-mail <span class="text-red-500">*</span></label>
+        <input type="email" id="emailZakaznika" class="mt-1 w-full border rounded p-2" placeholder="zakaznik@email.cz" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">IČO</label>
+        <input type="text" id="icoZakaznika" class="mt-1 w-full border rounded p-2" placeholder="87654321" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Adresa <span class="text-red-500">*</span></label>
+        <input type="text" id="adresaZakaznika" class="mt-1 w-full border rounded p-2" placeholder="Ulice, město" />
+      </div>
     </div>
     <!-- Položky nabídky -->
     <h2 class="text-xl font-semibold mb-2">Položky nabídky</h2>
